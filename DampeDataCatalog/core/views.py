@@ -13,11 +13,10 @@ class ListView(MethodView):
 
 class DetailView(MethodView):
 
-    def get(self):
-        slug = request.args.get("slug","None")
+    def get(self,slug):
         dfile = DampeFile.objects.get_or_404(slug=slug)
         return render_template('files/detail.html', dampeFile=dfile, replicas=dfile.replicas)
 
 # Register the urls
 files.add_url_rule('/', view_func=ListView.as_view('list'),methods=["GET"])
-files.add_url_rule('/<slug>/', view_func=DetailView.as_view('detail'),methods=["GET"])
+files.add_url_rule('/<slug>/', view_func=DetailView.as_view('detail'))
