@@ -1,6 +1,7 @@
 from DampeDataCatalog import version
 from socket import getfqdn
-kind = cfg.get("global", "installation")
+kind = "server"
+#kind = cfg.get("global", "installation")
 
 if kind == 'server':    
     
