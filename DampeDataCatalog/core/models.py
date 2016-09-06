@@ -1,7 +1,8 @@
 import datetime
 from mongoengine import CASCADE
+
 from DampeDataCatalog.core import db
-from utils.tools import random_string_generator
+from DampeDataCatalog.utils.tools import random_string_generator
 
 class DampeFile(db.Document):
     created_at      = db.DateTimeField(default=datetime.datetime.now, required=True)
