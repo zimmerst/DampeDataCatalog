@@ -2,7 +2,8 @@ from DampeDataCatalog import version
 from socket import getfqdn
 kind = "server"
 #kind = cfg.get("global", "installation")
-
+db = None
+app = None
 if kind == 'server':    
     
     from flask import Flask

@@ -1,6 +1,6 @@
 import datetime
 from mongoengine import CASCADE
-from core import db
+from DampeDataCatalog.core import db
 from utils.tools import random_string_generator
 
 class DampeFile(db.Document):
