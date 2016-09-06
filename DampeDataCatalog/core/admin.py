@@ -6,10 +6,10 @@ Created on Mar 10, 2016
 from flask import Blueprint, request, redirect, render_template, url_for
 from flask.views import MethodView
 
-from flask.ext.mongoengine.wtf import model_form
+from flask_mongoengine.wtf import model_form
 
-from core.auth import requires_auth
-from core.models import Post, Comment
+from DampeDataCatalog.core.auth import requires_auth
+from DampeDataCatalog.core.models import Post, Comment
 
 admin = Blueprint('admin', __name__, template_folder='templates')
 
