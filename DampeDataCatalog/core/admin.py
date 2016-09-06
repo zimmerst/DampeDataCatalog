@@ -1,6 +1,6 @@
 '''
 Created on Mar 10, 2016
-
+@attention: OBSOLETE!
 @author: zimmer
 '''
 from flask import Blueprint, request, redirect, render_template, url_for
