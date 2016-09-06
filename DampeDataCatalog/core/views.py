@@ -19,5 +19,5 @@ class DetailView(MethodView):
         return render_template('files/detail.html', dampeFile=dfile, replicas=dfile.replicas)
 
 # Register the urls
-files.add_url_rule('/', view_func=ListView.as_view('list'))
-files.add_url_rule('/<slug>/', view_func=DetailView.as_view('detail'))
+files.add_url_rule('/', view_func=ListView.as_view('list'),methods=["GET"])
+files.add_url_rule('/<slug>/', view_func=DetailView.as_view('detail'),methods=["GET"])
