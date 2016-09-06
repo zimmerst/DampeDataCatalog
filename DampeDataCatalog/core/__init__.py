@@ -16,6 +16,7 @@ if kind == 'server':
     app.config['MONGODB_HOST'] = "dampevm5.unige.ch"
     app.config['MONGODB_PORT'] = 25013
     app.config["SECRET_KEY"] = "KeepThisS3cr3t"
+    print app.config
     db = MongoEngine(app)
     
     def register_blueprints(app):
