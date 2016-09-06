@@ -1,0 +1,17 @@
+Flask
+flask-mongoengine
+Flask-Script
+Flask-WTF
+mongoengine
+pymongo
+Werkzeug
+WTForms
+jsonpickle
+requests
+importlib
+resource
+progressbar
+xmltodict
+multiprocessing
+psutil
+numpy
