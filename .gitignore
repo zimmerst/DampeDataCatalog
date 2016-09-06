@@ -1,0 +1,15 @@
+config/dampe.cfg
+*.log
+.idea
+.project
+.pydevproject
+dist
+.eggs
+*.pyc
+build
+DmpWorkflow.egg-info
+.settings
+
+AUTHORS
+
+ChangeLog
