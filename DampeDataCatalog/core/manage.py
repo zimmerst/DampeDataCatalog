@@ -20,7 +20,7 @@ manager.add_command("shell", Shell(make_context=_make_context))
 
 
 def main():
-    manager.run()
+    manager.run("runserver")
 
 
 if __name__ == "__main__":
