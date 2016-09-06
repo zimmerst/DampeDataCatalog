@@ -19,4 +19,4 @@ class DetailView(MethodView):
 
 # Register the urls
 files.add_url_rule('/', view_func=ListView.as_view('list'),methods=["GET"])
-#files.add_url_rule('/<slug>/', view_func=DetailView.as_view('detail'))
+files.add_url_rule('/<slug>/', view_func=DetailView.as_view('detail'))

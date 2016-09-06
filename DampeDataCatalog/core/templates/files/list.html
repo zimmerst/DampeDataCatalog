@@ -2,6 +2,6 @@
 
 {% block content %}
     {% for file in files %}
-      <p>{{ file.fileName }}</p>      
+      <h2><a href="{{ url_for('files.detail', slug=file.slug) }}">{{ file.fileName }}</a></h2>
     {% endfor %}
 {% endblock %}
