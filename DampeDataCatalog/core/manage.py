@@ -5,7 +5,7 @@ from sys import path as sys_path
 sys_path.append(abspath(oPjoin(dirname(__file__), '..')))
 from flask.ext.script import Manager, Server, Shell
 import DampeDataCatalog.core.models as DFCModels
-from DmpWorkflow.core import app, db
+from DampeDataCatalog.core import app, db
 
 def _make_context():
     return dict(app=app, db=db, models=DFCModels)
