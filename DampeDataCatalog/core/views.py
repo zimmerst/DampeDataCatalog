@@ -1,7 +1,7 @@
 from flask import Blueprint, request, redirect, render_template, url_for
 from flask.ext.mongoengine.wtf import model_form
 from flask.views import MethodView
-from core.models import DampeFile
+from DampeDataCatalog.core.models import DampeFile
 
 files = Blueprint('files', __name__, template_folder='templates')
 
