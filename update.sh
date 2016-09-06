@@ -2,7 +2,7 @@
 
 git pull
 python setup.py sdist
-tarball=$(ls -r dist | tail -n 1)
+tarball=$(ls -rt dist | tail -n 1)
 tarfile=$(greadlink -f dist/${tarball})
 echo "tarfile ${tarfile}"
 source ~/Envs/DFC/bin/activate
