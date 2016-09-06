@@ -22,6 +22,8 @@ manager.add_command("shell", Shell(make_context=_make_context))
 def main():
     manager.run("runserver")
 
+def runClient():
+    manager.run("shell")
 
 if __name__ == "__main__":
     main()
