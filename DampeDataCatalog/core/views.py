@@ -1,6 +1,6 @@
 from flask import Blueprint, request, redirect, render_template, url_for
 from flask_mongoengine.wtf import model_form
-from datetime import datetime
+from datetime import datetime, delta
 from flask.views import MethodView
 from DampeDataCatalog import version, start_time, hostName
 from DampeDataCatalog.core.models import DampeFile, DataSet
@@ -9,9 +9,14 @@ files = Blueprint('files', __name__, template_folder='templates')
 
 class InfoView(MethodView):
     def get(self):
-        time = datetime.now()
+        time = datetime.now()        
+        d = divmod(start_time-time,86400)  # days
+        h = divmod(d[1],3600)  # hours
+        m = divmod(h[1],60)  # minutes
+        s = m[1]  # seconds
+        uptime = "%d days, %d hours, %d minutes, %d seconds" % (d[0],h[0],m[0],s)
         return render_template("files/info.html", 
-                               server_version=version, server_time=time, 
+                               server_version=version, uptime=uptime, 
                                start_time=start_time, host=hostName)
 
 class DataSetView(MethodView):
