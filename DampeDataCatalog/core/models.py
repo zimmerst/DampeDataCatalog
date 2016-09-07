@@ -9,6 +9,7 @@ class DampeFile(db.Document):
     fileType        = db.StringField(verbose_name="file extension, root, fits etc.", max_length=16, required=True, default="root")
     source          = db.StringField(verbose_name="site where file was created", max_length=36, required=False)
     slug            = db.StringField(verbose_name="slug", required=True, default=random_string_generator)
+    dataset         = db.StringField(verbose_name="dataset name", max_length=64, required=True)
     fileName        = db.StringField(verbose_name="full file name", max_length=1024, required=True)
     replicas        = db.ListField(db.ReferenceField("DampeFileReplica"))
     kind            = db.StringField(max_length=24, required=False)
@@ -25,7 +26,7 @@ class DampeFile(db.Document):
 
     meta = {
         'allow_inheritance': True,
-        'indexes': ['-created_at', 'fileName','slug'],
+        'indexes': ['-created_at', 'fileName','slug','dataset'],
         'ordering': ['-created_at']
     }
     
