@@ -15,7 +15,7 @@ class InfoView(MethodView):
         h = divmod(d[1],3600)
         m = divmod(h[1],60)
         s = m[1]        
-        uptime = '%03d:%02d:%02d:%02d'%(d,h,m,s)
+        uptime = '%03d:%02d:%02d:%02d'%(d[0],h[0],m[0],s)
         return render_template("files/info.html", 
                                server_version=version, uptime=uptime, 
                                start_time=start_time, host=hostName)
