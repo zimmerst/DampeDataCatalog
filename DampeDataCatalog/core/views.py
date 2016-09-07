@@ -12,8 +12,8 @@ class DataSetView(MethodView):
 
 class ListView(MethodView):
 
-    def get(self,name):
-        ds = DataSet.objects.get_or_404(name=name)
+    def get(self,slug):
+        ds = DataSet.objects.get_or_404(slug=slug)
         files = DampeFile.objects.filter(dataset=ds)
         return render_template('files/list.html', files=files, dataset=ds)
 
@@ -25,6 +25,6 @@ class DetailView(MethodView):
 
 # Register the urls
 files.add_url_rule('/', view_func=DataSetView.as_view('dataset'),methods=["GET"])
-files.add_url_rule('/<name>/', view_func=ListView.as_view('list'))
-files.add_url_rule('/<name>/detail', view_func=DetailView.as_view('detail'))
+files.add_url_rule('/<slug>/', view_func=ListView.as_view('list'))
+files.add_url_rule('/<slug>/detail', view_func=DetailView.as_view('detail'))
 

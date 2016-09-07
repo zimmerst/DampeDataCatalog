@@ -6,6 +6,7 @@ from DampeDataCatalog.utils.tools import random_string_generator
 
 class DataSet(db.Document):
     created_at      = db.DateTimeField(default=datetime.datetime.now, required=True)
+    slug            = db.StringField(verbose_name="slug", required=True, default=random_string_generator)
     name            = db.StringField(verbose_name="dataset name", max_length=128, required=True)
     kind            = db.StringField(max_length=24, required=False)
     files           = db.ListField(db.ReferenceField("DampeFile"))
@@ -20,7 +21,7 @@ class DataSet(db.Document):
 
     meta = {
         'allow_inheritance': True,
-        'indexes': ['-created_at', 'name','kind'],
+        'indexes': ['-created_at', 'name','kind','slug'],
         'ordering': ['-created_at']
     }
     
