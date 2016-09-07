@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+{% block content %}
+	<h3> Registered Datasets </h3>
+	{% for ds in datasets %}
+	<p> {{ ds.name }} (files: {{ ds.files | length }}</p>
+	{% endfor %}
+{% endblock %}

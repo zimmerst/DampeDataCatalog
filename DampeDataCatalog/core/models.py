@@ -4,15 +4,34 @@ from mongoengine import CASCADE
 from DampeDataCatalog.core import db
 from DampeDataCatalog.utils.tools import random_string_generator
 
+class DataSet(db.Document):
+    created_at      = db.DateTimeField(default=datetime.datetime.now, required=True)
+    name            = db.StringField(verbose_name="dataset name", max_length=128, required=True)
+    kind            = db.StringField(max_length=24, required=False)
+    files           = db.ListField(db.ReferenceField("DampeFile"))
+
+    def addFile(self,df):
+        if not isinstance(df,DampeFile): raise Exception("must be a DampeFile instance")
+        query = DampeFile.objects.filter(dataset=self,fileName=df.fileName)
+        if query.count(): raise Exception("replica is already associated with this site & file")
+        df.save()
+        self.files.append(df)
+        self.save()
+
+    meta = {
+        'allow_inheritance': True,
+        'indexes': ['-created_at', 'name','kind'],
+        'ordering': ['-created_at']
+    }
+    
 class DampeFile(db.Document):
     created_at      = db.DateTimeField(default=datetime.datetime.now, required=True)
     fileType        = db.StringField(verbose_name="file extension, root, fits etc.", max_length=16, required=True, default="root")
-    source          = db.StringField(verbose_name="site where file was created", max_length=36, required=False)
     slug            = db.StringField(verbose_name="slug", required=True, default=random_string_generator)
-    dataset         = db.StringField(verbose_name="dataset name", max_length=64, required=True)
+    source          = db.StringField(verbose_name="site where file was created", max_length=36, required=False)
+    dataset         = db.ReferenceField("DataSet",reverse_delete_rule=CASCADE)
     fileName        = db.StringField(verbose_name="full file name", max_length=1024, required=True)
     replicas        = db.ListField(db.ReferenceField("DampeFileReplica"))
-    kind            = db.StringField(max_length=24, required=False)
     tstart          = db.LongField(verbose_name="TStart (ms) for orbit data", required=False)
     tstop           = db.LongField(verbose_name="TStop (ms) for orbit data", required=False)
     
@@ -26,7 +45,7 @@ class DampeFile(db.Document):
 
     meta = {
         'allow_inheritance': True,
-        'indexes': ['-created_at', 'fileName','slug','dataset'],
+        'indexes': ['-created_at', 'fileName','slug'],
         'ordering': ['-created_at']
     }
     

@@ -1,15 +1,21 @@
 from flask import Blueprint, request, redirect, render_template, url_for
 from flask_mongoengine.wtf import model_form
 from flask.views import MethodView
-from DampeDataCatalog.core.models import DampeFile
+from DampeDataCatalog.core.models import DampeFile, DataSet
 
 files = Blueprint('files', __name__, template_folder='templates')
 
+class DataSetView(MethodView):
+    def get(self):
+        ds = DataSet.objects.all()
+        return render_template("files/dataset.html", datasets = ds)
+
 class ListView(MethodView):
 
-    def get(self):
-        files = DampeFile.objects.all()
-        return render_template('files/list.html', files=files)
+    def get(self,name):
+        ds = DataSet.objects.get_or_404(name=name)
+        files = DampeFile.objects.filter(dataset=ds)
+        return render_template('files/list.html', files=files, dataset=ds)
 
 class DetailView(MethodView):
 
@@ -18,5 +24,7 @@ class DetailView(MethodView):
         return render_template('files/detail.html', dampeFile=dfile, replicas=dfile.replicas)
 
 # Register the urls
-files.add_url_rule('/', view_func=ListView.as_view('list'),methods=["GET"])
-files.add_url_rule('/<slug>/', view_func=DetailView.as_view('detail'))
+files.add_url_rule('/', view_func=DataSetView.as_view('dataset'),methods=["GET"])
+files.add_url_rule('/<name>/', view_func=ListView.as_view('list'))
+files.add_url_rule('/<name>/detail', view_func=DetailView.as_view('detail'))
+
