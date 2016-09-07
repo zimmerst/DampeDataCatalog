@@ -12,7 +12,7 @@ class InfoView(MethodView):
         time = datetime.now()
         return render_template("files/info.html", 
                                server_version=version, server_time=time, 
-                               startTime=start_time, host=hostName)
+                               start_time=start_time, host=hostName)
 
 class DataSetView(MethodView):
     def get(self):
