@@ -17,7 +17,7 @@ manager.add_command("runserver", Server(use_debugger=True,
                                         host="0.0.0.0",
                                         port="5000"))
 
-#manager.add_command("shell", Shell(make_context=_make_context))
+manager.add_command("shell", Shell(make_context=_make_context))
 
 
 def main():
