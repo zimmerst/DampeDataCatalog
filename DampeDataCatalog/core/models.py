@@ -19,6 +19,7 @@ class DampeFile(db.Document):
         if not isinstance(rep,DampeFileReplica): raise Exception("must be a DampeFileReplica")
         query = DampeFileReplica.objects.filter(dampeFile=self,site=rep.site)
         if query.count(): raise Exception("replica is already associated with this site & file")
+        rep.save()
         self.replicas.append(rep)
         self.save()
 
