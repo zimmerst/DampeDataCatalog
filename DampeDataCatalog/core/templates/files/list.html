@@ -3,6 +3,6 @@
 {% block content %}
     <h3> Files registered for dataset {{ dataset.name }} </h3>
     {% for file in files %}
-      <p><a href="{{ url_for('files.detail', slug=file.slug) }}">{{ file.fileName }}</a></p>
+      <p><span class="glyphicon glyphicon-file"> <a href="{{ url_for('files.detail', slug=file.slug) }}">{{ file.fileName }}</a></p>
     {% endfor %}
 {% endblock %}
