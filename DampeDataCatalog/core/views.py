@@ -9,12 +9,13 @@ files = Blueprint('files', __name__, template_folder='templates')
 
 class InfoView(MethodView):
     def get(self):
-        time = datetime.now()        
-        d = divmod(start_time-time,86400)  # days
-        h = divmod(d[1],3600)  # hours
-        m = divmod(h[1],60)  # minutes
-        s = m[1]  # seconds
-        uptime = "%d days, %d hours, %d minutes, %d seconds" % (d[0],h[0],m[0],s)
+        time = datetime.now()
+        dtime = (time - start_time).seconds        
+        d = divmod(dtime,86400)
+        h = divmod(d[1],3600)
+        m = divmod(h[1],60)
+        s = m[1]        
+        uptime = '%03d:%02d:%02d:%02d' %(d,h,m,s)
         return render_template("files/info.html", 
                                server_version=version, uptime=uptime, 
                                start_time=start_time, host=hostName)
