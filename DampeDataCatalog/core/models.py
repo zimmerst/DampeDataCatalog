@@ -14,6 +14,15 @@ class DampeFile(db.Document):
     kind            = db.StringField(max_length=24, required=False)
     tstart          = db.LongField(verbose_name="TStart (ms) for orbit data", required=False)
     tstop           = db.LongField(verbose_name="TStop (ms) for orbit data", required=False)
+    
+    def addReplica(self,rep):
+        if not isinstance(rep,DampeFileReplica): raise Exception("must be a DampeFileReplica")
+        try: 
+            replica = DampeFileReplica.objects(dampeFile=self,site=rep.site)
+        except DampeFileReplica.DoesNotExist:
+            replica = rep
+            self.replicas.append(replica)
+        self.save()
 
     meta = {
         'allow_inheritance': True,
