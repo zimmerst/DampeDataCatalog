@@ -10,7 +10,6 @@ files = Blueprint('files', __name__, template_folder='templates')
 class InfoView(MethodView):
     def get(self):
         time = datetime.now()
-        version = version
         return render_template("files/info.html", 
                                server_version=version, server_time=time, 
                                startTime=start_time, host=hostName)
