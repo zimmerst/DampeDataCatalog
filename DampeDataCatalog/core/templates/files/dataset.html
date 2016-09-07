@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-	<h3> Registered Datasets </h3>
+	<h3> Registered Datasets {{ datasets | length }}</h3>
 	{% for ds in datasets %}
 	<p> <span class="glyphicon glyphicon-folder-open"> <a href="{{ url_for('files.list', slug=ds.slug) }}">{{ ds.name }} (files: {{ ds.files | length }})</a></p>
 	{% endfor %}
