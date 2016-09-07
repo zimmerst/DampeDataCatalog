@@ -1,6 +1,6 @@
 from flask import Blueprint, request, redirect, render_template, url_for
 from flask_mongoengine.wtf import model_form
-from datetime import datetime, delta
+from datetime import datetime
 from flask.views import MethodView
 from DampeDataCatalog import version, start_time, hostName
 from DampeDataCatalog.core.models import DampeFile, DataSet
