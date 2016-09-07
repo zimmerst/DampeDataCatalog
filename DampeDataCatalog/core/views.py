@@ -1,9 +1,19 @@
 from flask import Blueprint, request, redirect, render_template, url_for
 from flask_mongoengine.wtf import model_form
+from datetime import datetime
 from flask.views import MethodView
+from DampeDataCatalog import version, start_time, hostName
 from DampeDataCatalog.core.models import DampeFile, DataSet
 
 files = Blueprint('files', __name__, template_folder='templates')
+
+class InfoView(MethodView):
+    def get(self):
+        time = datetime.now()
+        version = version
+        return render_template("files/info.html", 
+                               server_version=version, server_time=time, 
+                               startTime=start_time, host=hostName)
 
 class DataSetView(MethodView):
     def get(self):
@@ -27,4 +37,5 @@ class DetailView(MethodView):
 files.add_url_rule('/', view_func=DataSetView.as_view('dataset'),methods=["GET"])
 files.add_url_rule('/<slug>/', view_func=ListView.as_view('list'))
 files.add_url_rule('/<slug>/detail', view_func=DetailView.as_view('detail'))
+files.add_url_rule('/info', view_func=InfoView.as_view('info'),methods=["GET"])
 

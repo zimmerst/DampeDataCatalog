@@ -4,10 +4,14 @@ Created on Sep 6, 2016
 @author: zimmer
 '''
 import logging
-
+from socket import getfqdn
+from datetime import datetime
 # Define Version
 import pkg_resources
+
 version = pkg_resources.get_distribution(__package__).version
+hostName= getfqdn()
+start_time = datetime.now()
 
 try:
 #    from DmpWorkflow.config.defaults import DAMPE_LOGFILE
