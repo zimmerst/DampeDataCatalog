@@ -122,7 +122,9 @@ def createNewDBEntry(**kwargs):
         raise Exception("full path not provided")
     # remove prefix
     print("fPath %s"%fPath)
-    fPath = fPath.replace(kwargs.get("prefix","/"),"")
+    prf = kwargs.get("prefix","/")
+    if prf in fPath:
+        fPath = fPath.replace(prf,"")
     walker = fPath.split("/")
     dtype = kwargs.get("dtype","2A")
     # next, extract dataset name
