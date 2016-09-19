@@ -54,16 +54,15 @@ class BulkRegister(MethodView):
         """
         logger.debug("BulkRegister:POST: request form %s", str(request.form))
         site = str(request.form.get("site", "None"))
-        bulkrequest = request.files.get("file", None)
+        bulk = request.files.get("file", None)
         try:
-            if bulkrequest is None: 
+            if bulk is None: 
                 raise Exception("bulk request is emtpy") 
             if site == "None":
                 raise Exception("site is not set")
             ## handle the read-out of file here ##
             # move to beginning of file.
-            bulkrequest.seek(0)
-            bulk = bulkrequest.open("r")
+            bulk.seek(0)
             newEntries = 0
             for i,line in enumerate(bulk.readlines()):
                 chksum = size = fullPath = None
@@ -73,12 +72,12 @@ class BulkRegister(MethodView):
                     logger.error("error processing line %i: %s",i,line)
                     continue
                 ## else create entry.
-                __createNewDBEntry__(site=site,is_origin=bool(request.form.get("is_origin",False)),chksum=chksum,
-                                          size=size,fullPath=fullPath,prefix=str(request.form.get("prefix","PMU_cluster/")),
-                                          target=str(request.form.get("targetdir","/")),dtype=str(request.form.get("dtype","2A")))
+                createNewDBEntry(site=site,is_origin=bool(request.form.get("is_origin",False)),chksum=chksum,
+                                 size=size,fullPath=fullPath,prefix=str(request.form.get("prefix","PMU_cluster/")),
+                                 target=str(request.form.get("targetdir","/")),dtype=str(request.form.get("dtype","2A")))
                 newEntries+=1
             logger.info("added %i new entries",newEntries)
-            bulkrequest.close()
+            bulk.close()
             return dumps({"result":"ok","nEntries":newEntries})
             ## done.
         except Exception as err:

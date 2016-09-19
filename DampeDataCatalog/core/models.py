@@ -139,9 +139,9 @@ def createNewDBEntry(**kwargs):
         logger.debug("created new DataSet object, saving.")
         dsQuery.save()
     try:
-        dfQuery = DampeFile.objects.get(filetype=splitext(fPath)[-1],fileName=basename(fPath),dataset=dsQuery)
+        dfQuery = DampeFile.objects.get(fileType=splitext(fPath)[-1],fileName=basename(fPath),dataset=dsQuery)
     except DampeFile.DoesNotExist:
-        dfQuery = DampeFile(filetype=splitext(fPath)[-1],fileName=basename(fPath),dataset=dsQuery)
+        dfQuery = DampeFile(fileType=splitext(fPath)[-1],fileName=basename(fPath),dataset=dsQuery)
         dfQuery.save()
     dfQuery.update(size=long(kwargs.get("size")))
     
