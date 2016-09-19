@@ -27,7 +27,7 @@ class DataSet(db.Document):
     
 class DampeFile(db.Document):
     created_at      = db.DateTimeField(default=datetime.datetime.now, required=True)
-    fileType        = db.StringField(verbose_name="file extension, root, fits etc.", max_length=16, required=True, default="root")
+    fileType        = db.StringField(verbose_name="file extension, root, fits etc.", max_length=6, required=True, default="root")
     slug            = db.StringField(verbose_name="slug", required=True, default=random_string_generator)
     dataset         = db.ReferenceField("DataSet",reverse_delete_rule=CASCADE)
     fileName        = db.StringField(verbose_name="full file name", max_length=1024, required=True)
@@ -37,6 +37,7 @@ class DampeFile(db.Document):
     tStartDT        = db.DateTimeField(verbose_name="TStart (human-format) for orbit data", required=False)
     tStopDT         = db.DateTimeField(verbose_name="TStop (human-format) for orbit data", required=False)
     nEvents         = db.LongField(verbose_name="number of events stored",required=False, default=0)
+    fileSize        = db.LongField(verbose_name="file size in bytes",required=False,default=0)
 
     def addReplica(self,rep):
         if not isinstance(rep,DampeFileReplica): raise Exception("must be a DampeFileReplica")
@@ -79,7 +80,7 @@ class DampeFileReplica(db.Document):
     path            = db.StringField(verbose_name="full path on site", max_length=1024, required=True)
     site            = db.StringField(verbose_name="site where replica is stored", max_length=12, required=False)
     status          = db.StringField(verbose_name="status of replica", max_length=64, required=True, default=None)
-    minor_status    = db.StringField(verbose_name="detailed status of replica", max_length=64, required=True, default=None)
+    minor_status    = db.StringField(verbose_name="detailed status of replica", max_length=64, required=False, default=None)
     dampeFile       = db.ReferenceField("DampeFile", reverse_delete_rule=CASCADE)
 
     def setStatus(self,stat,minor_stat=None):
