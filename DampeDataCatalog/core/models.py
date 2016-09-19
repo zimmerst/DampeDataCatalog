@@ -143,6 +143,7 @@ def createNewDBEntry(**kwargs):
     except DampeFile.DoesNotExist:
         dfQuery = DampeFile(fileType=splitext(fPath)[-1],fileName=basename(fPath),dataset=dsQuery)
         dfQuery.save()
+        dfQuery = DampeFile.objects.get(fileType=splitext(fPath)[-1],fileName=basename(fPath),dataset=dsQuery)
     dfQuery.update(size=long(kwargs.get("size")))
     
     for key in ['tStart','tStop','tStartDT','tStopDT','nEvents']:
