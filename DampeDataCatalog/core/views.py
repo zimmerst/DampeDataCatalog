@@ -30,8 +30,8 @@ class Register(MethodView):
         """
         logger.debug("Register:POST: request form %s", str(request.form))
         try:
-            logger.info("request dict %s",str(request.form))
-            createNewDBEntry(**request.form)
+            #logger.info("request dict %s",str(request.form))
+            createNewDBEntry(**dict(request.form))
             return dumps({"result":"ok","nEntries":1})
             ## done.
         except Exception as err:
