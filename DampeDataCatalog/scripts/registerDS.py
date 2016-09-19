@@ -9,7 +9,7 @@ Created on Sep 19, 2016
 from requests import post
 from os.path import isfile
 from argparse import ArgumentParser
-URL = "dampevm6.unige.ch:4000"
+URL = "http://dampevm6.unige.ch:4000"
 
 def main(args=None):
     parser = ArgumentParser(usage="Usage: %(prog)s [options]",description="register new entry in DFC")
@@ -22,23 +22,27 @@ def main(args=None):
     opts = parser.parse_args(args)
     my_dict = vars(opts)
     bulk = False
-    if isfile(opts.file):
-        print 'found file in list of supplied arguments, assuming bulk mode'
-        infile=opts.file
-        print 'found %i entries in %s'%(len(open(infile,'r').readlines()),infile)
-        for key in keys_to_remove_for_bulk:
-            my_dict.pop(key)
-        bulk = True
+    if opts.file is not None:
+        if isfile(opts.file):
+            print 'found file in list of supplied arguments, assuming bulk mode'
+            infile=opts.file
+            print 'found %i entries in %s'%(len(open(infile,'r').readlines()),infile)
+            for key in keys_to_remove_for_bulk:
+                my_dict.pop(key)
+            bulk = True
     else:
         my_dict.pop("file")
+    keys_to_remove = []
     for key in my_dict:
         if my_dict[key] is None:
-            my_dict.pop(key)
+            keys_to_remove.append(key)
+    for key in keys_to_remove: 
+        my_dict.pop(key)
     res = None
     if bulk:
         res = post("%s/bregister"%URL, data = my_dict, files={"file":open(infile,"r")})
     else:
-        res = post("%s/bregister"%URL, data = my_dict)
+        res = post("%s/register"%URL, data = my_dict)
     res.raise_for_status()
     js = res.json()
     if js.get("result", "nok") == "ok":

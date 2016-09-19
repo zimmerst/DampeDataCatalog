@@ -115,9 +115,13 @@ def createNewDBEntry(**kwargs):
         MC: dataset name is the base folder (after prefix)
         2A: dataset name is the base folder + 1 layer (after 1 prefix)            
     """
+    print kwargs
     # must separate a bit more from path
     fPath = kwargs.get("fullPath",None)
+    if fPath is None:
+        raise Exception("full path not provided")
     # remove prefix
+    print("fPath %s"%fPath)
     fPath = fPath.replace(kwargs.get("prefix","/"),"")
     walker = fPath.split("/")
     dtype = kwargs.get("dtype","2A")
@@ -142,9 +146,8 @@ def createNewDBEntry(**kwargs):
         dfQuery = DampeFile.objects.get(fileType=splitext(fPath)[-1],fileName=basename(fPath),dataset=dsQuery)
     except DampeFile.DoesNotExist:
         dfQuery = DampeFile(fileType=splitext(fPath)[-1],fileName=basename(fPath),dataset=dsQuery)
-        dfQuery.save()
-    dfQuery = DampeFile.objects.filter(fileType=splitext(fPath)[-1],fileName=basename(fPath),dataset=dsQuery)
-    dfQuery.update(size=long(kwargs.get("size",0)))
+    dfQuery.size = long(kwargs.get("size",0))
+    dfQuery.save()
     
     for key in ['tStart','tStop','tStartDT','tStopDT','nEvents']:
         value = kwargs.get(key,None)
