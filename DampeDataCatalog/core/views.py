@@ -23,7 +23,7 @@ class Register(MethodView):
             prefix = str
             target = str
             dtype = str
-            
+            release = str            
             dtype can be: 2A, MC, might add additional types later.
             MC: dataset name is the base folder (after prefix)
             2A: dataset name is the base folder + 1 layer (after 1 prefix)                
@@ -31,7 +31,7 @@ class Register(MethodView):
         logger.debug("Register:POST: request form %s", str(request.form))
         try:
             createNewDBEntry(request.form)
-            return dumps({"result":"ok"})
+            return dumps({"result":"ok","nEntries":1})
             ## done.
         except Exception as err:
             logger.error("request dict: %s", str(request.form))
@@ -48,9 +48,10 @@ class BulkRegister(MethodView):
             site : required, if not supplied, will throw exception
             file : must be a text file with 3 columns: checksum, size (bytes), full path
             is_origin : optional (will default to False)
+            release: optional (will default to None)
             prefix : optional, defaults to /, remove first occurrence
             dtype : optional, defaults to 2A, other allowed value is MC
-            targetdir: optional, defaults to /; used as path for replica registration.
+            target: optional, defaults to /; used as path for replica registration.
         """
         logger.debug("BulkRegister:POST: request form %s", str(request.form))
         site = str(request.form.get("site", "None"))
@@ -73,8 +74,9 @@ class BulkRegister(MethodView):
                     continue
                 ## else create entry.
                 createNewDBEntry(site=site,is_origin=bool(request.form.get("is_origin",False)),chksum=chksum,
-                                 size=size,fullPath=fullPath,prefix=str(request.form.get("prefix","PMU_cluster/")),
-                                 target=str(request.form.get("targetdir","/")),dtype=str(request.form.get("dtype","2A")))
+                                 release=request.form.get("release",""),size=size,
+                                 fullPath=fullPath,prefix=str(request.form.get("prefix","PMU_cluster/")),
+                                 target=str(request.form.get("target","/")),dtype=str(request.form.get("dtype","2A")))
                 newEntries+=1
             logger.info("added %i new entries",newEntries)
             bulk.close()
