@@ -15,9 +15,9 @@ def main(args=None):
     parser = ArgumentParser(usage="Usage: %(prog)s [options]",description="register new entry in DFC")
     for key in ['file','chksum','prefix','target','release','size','dtype']:
         parser.add_argument("-%s"%key[0],"--%s"%key, dest=key, type=long if key == 'size' else str, default=None)
-    parser.add_argument("-S","--site",type=str, default=None, help="*deprecated* site where replica is registered")
     parser.add_argument("-o","--is_original",dest="is_original",action="store_true",default=False,help="use if this is the source")
     parser.add_argument("-F","--fullPath",dest="fullPath",type=str, default=None, help="full path to file")
+    parser.add_argument("-S","--site",type=str, default=None, help="*deprecated* site where replica is registered")
     keys_to_remove_for_bulk = ['chksum','size','fullPath','file']
     opts = parser.parse_args(args)
     my_dict = vars(opts)
