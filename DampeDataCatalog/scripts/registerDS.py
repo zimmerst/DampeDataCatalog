@@ -12,8 +12,7 @@ from argparse import ArgumentParser
 URL = "dampevm6.unige.ch:4000"
 
 def main(args=None):
-    parser = ArgumentParser(usage="Usage: %(progs)s [options]",description="register new entry in DFC")
-    parser.add_argument("--dtype", dest="dtype", type=str, default=None, help="2A or MC")
+    parser = ArgumentParser(usage="Usage: %(prog)s [options]",description="register new entry in DFC")
     for key in ['file','chksum','prefix','target','release','size','dtype']:
         parser.add_argument("-%s"%key[0],"--%s"%key, dest=key, type=long if key == 'size' else str, default=None)
     parser.add_argument("-S","--site",type=str, default=None, help="*deprecated* site where replica is registered")

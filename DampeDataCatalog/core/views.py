@@ -1,6 +1,6 @@
 import logging
 from json import dumps
-from flask import Blueprint, request, redirect, render_template
+from flask import Blueprint, request, render_template
 #from flask_mongoengine.wtf import model_form
 from datetime import datetime
 from flask.views import MethodView
