@@ -152,7 +152,8 @@ def createNewDBEntry(**kwargs):
             if key in ['tStart','tStop','nEvents']:
                 value = long(value)
             if key in ['tStartDT','tStopDT']:
-                '"2016-09-19 14:52:49.862971"'
+                # this is the format
+                #'"2016-09-19 14:52:49.862971"'
                 str_value = loads(value)
                 value = datetime.datetime.strptime(str_value,'%Y-%m-%d %H:%M:%S.%f')
             dfQuery.update(key=value)
