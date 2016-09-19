@@ -29,13 +29,15 @@ class DampeFile(db.Document):
     created_at      = db.DateTimeField(default=datetime.datetime.now, required=True)
     fileType        = db.StringField(verbose_name="file extension, root, fits etc.", max_length=16, required=True, default="root")
     slug            = db.StringField(verbose_name="slug", required=True, default=random_string_generator)
-    source          = db.StringField(verbose_name="site where file was created", max_length=36, required=False)
     dataset         = db.ReferenceField("DataSet",reverse_delete_rule=CASCADE)
     fileName        = db.StringField(verbose_name="full file name", max_length=1024, required=True)
     replicas        = db.ListField(db.ReferenceField("DampeFileReplica"))
-    tstart          = db.LongField(verbose_name="TStart (ms) for orbit data", required=False)
-    tstop           = db.LongField(verbose_name="TStop (ms) for orbit data", required=False)
-    
+    tStart          = db.LongField(verbose_name="TStart (ms) for orbit data", required=False)
+    tStop           = db.LongField(verbose_name="TStop (ms) for orbit data", required=False)
+    tStartDT        = db.DateTimeField(verbose_name="TStart (human-format) for orbit data", required=False)
+    tStopDT         = db.DateTimeField(verbose_name="TStop (human-format) for orbit data", required=False)
+    nEvents         = db.LongField(verbose_name="number of events stored",required=False, default=0)
+
     def addReplica(self,rep):
         if not isinstance(rep,DampeFileReplica): raise Exception("must be a DampeFileReplica")
         query = DampeFileReplica.objects.filter(dampeFile=self,site=rep.site)
@@ -43,10 +45,29 @@ class DampeFile(db.Document):
         rep.save()
         self.replicas.append(rep)
         self.save()
+    
+    def getOrigin(self):
+        try:
+            return DampeFileReplica.objects.get(dampeFile=self,is_origin=True)
+        except DampeFileReplica.DoesNotExist:
+            return None
+    
+    def verifyCheckSums(self):
+        """ returns True if all checksums are identical, False if error is encountered """
+        verify=True
+        origin = self.getOrigin()
+        if origin:
+            chk_raw = origin.checksum
+            for rep in self.replicas:
+                if not rep.is_origin and rep.status=="bad":
+                    if rep.checksum != chk_raw:
+                        rep.setStatus("bad",minor="bad checksum")
+                        verify=False
+        return verify
 
     meta = {
         'allow_inheritance': True,
-        'indexes': ['-created_at', 'fileName','slug'],
+        'indexes': ['-created_at', 'fileName','slug','tStart','tStop'],
         'ordering': ['-created_at']
     }
     
@@ -54,10 +75,18 @@ class DampeFile(db.Document):
 class DampeFileReplica(db.Document):
     created_at      = db.DateTimeField(default=datetime.datetime.now, required=True)
     checksum        = db.StringField(verbose_name="checksum reported", max_length=64, required=True, default=None)
+    is_origin       = db.BooleanField(verbose_name="is true for original file", default=False, required=True)
     path            = db.StringField(verbose_name="full path on site", max_length=1024, required=True)
     site            = db.StringField(verbose_name="site where replica is stored", max_length=12, required=False)
     status          = db.StringField(verbose_name="status of replica", max_length=64, required=True, default=None)
+    minor_status    = db.StringField(verbose_name="detailed status of replica", max_length=64, required=True, default=None)
     dampeFile       = db.ReferenceField("DampeFile", reverse_delete_rule=CASCADE)
+
+    def setStatus(self,stat,minor_stat=None):
+        q = DampeFileReplica.objects.filter(site=self.site,path=self.path,dampeFile=self.dampeFile)
+        if minor_stat:
+            q.update(minor_status=minor_stat)
+        q.update(status=stat)
 
     meta = {
         'allow_inheritance': True,

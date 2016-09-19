@@ -3,9 +3,28 @@
 {% block page_header %}
   <div class="page-header">
     <h4>{{ dampeFile.fileName }}</h4>
-    {% for replica in replicas %}
-      <p>{{ replica.site }} : {{ replica.status }}</p>
-    {% endfor %}
+	<p> <strong>TStart:</strong> {{ dampeFile.tStart }} ( {{ dampeFile.tStartDT }} ) </p>
+	<p> <strong>TStop:</strong> {{ dampeFile.tStop }} ( {{ dampeFile.tStopDT }} ) </p>
+	<p> <strong>Events in File:</strong> {{ dampeFile.nEvents }} </p>	
+	<h5>Replicas </h5>
+	<table class="table">
+		<thead>
+			<th>Site</th>
+			<th>Status</th>
+			<th>Minor Status</th>
+			<th>Path</th>
+			<th>is Origin</th>
+      	</thead>    
+        {% for replica in replicas %}
+		<tr>
+		    <td>{{ replica.site|safe}}</td>
+			<td>{{ replica.status|safe }}</td>
+			<td>{{ replica.minor_status|safe }}</td>
+			<td>{{ replica.path|safe }} </td>
+			<td>{{ replica.is_origin|safe }} </td>			
+		</tr>
+		{% endfor %}
+		</table>
   </div>
 {% endblock %}
 
