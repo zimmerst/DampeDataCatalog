@@ -165,4 +165,5 @@ def createNewDBEntry(**kwargs):
                            path=kwargs.get("target","/"),site=kwargs.get("site",""),status="New")
     rep.save()
     dfQuery.addReplica(rep)
-    dsQuery.addFile(dfQuery)
+    # not needed anymore.
+    #dsQuery.addFile(dfQuery)
