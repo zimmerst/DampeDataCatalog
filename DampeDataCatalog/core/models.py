@@ -121,8 +121,7 @@ def createNewDBEntry(**kwargs):
     if fPath is None:
         raise Exception("full path not provided")
     # remove prefix
-    print("fPath %s"%fPath)
-    fPath = loads(fPath)
+    fPath = fPath[0]
     prf = kwargs.get("prefix","/")
     if prf in fPath:
         fPath = fPath.replace(prf,"")
