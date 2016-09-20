@@ -140,25 +140,28 @@ def createNewDBEntry(**kwargs):
     else:
         dsname = walker[0]
     logger.debug("dsname: %s, kind: %s",dsname,dtype)
-    dsQuery = dfQuery = None
-    try:
-        dsQuery = DataSet.objects.get(name=dsname, kind=dtype)
-    except DataSet.DoesNotExist:
-        dsQuery = DataSet(name=pJoin(walker[0],walker[1]) if dtype == "2A" else walker[0], kind=dtype)
+    dsQuery = ds = dfQuery = df = None
+    dsQuery = DataSet.objects.filter(name=dsname, kind=dtype)
+    if not dsQuery.count():
+        ds = DataSet(name=pJoin(walker[0],walker[1]) if dtype == "2A" else walker[0], kind=dtype)
         logger.debug("created new DataSet object, saving.")
-        dsQuery.save()
-    try:
-        dfQuery = DampeFile.objects.get(fileType=splitext(fPath)[-1],fileName=basename(fPath),dataset=dsQuery)
-    except DampeFile.DoesNotExist:
-        dfQuery = DampeFile(fileType=splitext(fPath)[-1],fileName=basename(fPath),dataset=dsQuery)
+        ds.save()
+    else:
+        ds = dsQuery.first()
+    dfQuery = DampeFile.objects.filter(fileType=splitext(fPath)[-1],fileName=basename(fPath),dataset=ds)
+    if not dfQuery.count():
+        df = DampeFile(fileType=splitext(fPath)[-1],fileName=basename(fPath),dataset=ds)
+    else:
+        logger.info("found DampeFile already")
+        df = dfQuery.first()        
     mode = kwargs.get("mode",None)
     if mode is not None:
-        dfQuery.mode = mode
+        df.mode = mode
     fsize = kwargs.get("size",None)
     if fsize is not None:
-        dfQuery.size = long(fsize)
-    dfQuery.save()
-    
+        df.size = long(fsize)
+    df.save()
+    dfQuery = DampeFile.objects.filter(fileType=splitext(fPath)[-1],fileName=basename(fPath),dataset=ds)
     for key in ['tStart','tStop','tStartDT','tStopDT','nEvents']:
         value = kwargs.get(key,None)
         if value is not None:
@@ -174,6 +177,6 @@ def createNewDBEntry(**kwargs):
     rep = DampeFileReplica(checksum=kwargs.get("chksum"),is_origin=bool(kwargs.get("is_origin",False)),
                            path=kwargs.get("target","/"),site=kwargs.get("site",""),status="New")
     rep.save()
-    dfQuery.addReplica(rep)
+    df.addReplica(rep)
     # not needed anymore.
     #dsQuery.addFile(dfQuery)
