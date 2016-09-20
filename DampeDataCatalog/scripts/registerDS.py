@@ -38,6 +38,8 @@ def main(args=None):
             keys_to_remove.append(key)
     for key in keys_to_remove: 
         my_dict.pop(key)
+    # explicit bool conversion.
+    if 'is_origin' in my_dict: my_dict['is_origin'] = bool(my_dict['is_origin'])
     res = None
     if bulk:
         res = post("%s/bregister"%URL, data = my_dict, files={"file":open(infile,"r")})

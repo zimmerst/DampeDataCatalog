@@ -194,6 +194,7 @@ def createNewDBEntry(**kwargs):
                            path=kwargs.get("target","/"),site=kwargs.get("site",""),status="New")
     #rep.save()
     df.addReplica(rep)
-    ds.files.append(df)
+    ds.addFile(df)
+    #ds.files.append(df)
     ds.save()
     return 1
