@@ -14,6 +14,7 @@
 			<th>Minor Status</th>
 			<th>Path</th>
 			<th>is Origin</th>
+			<th>checksum</th>
       	</thead>    
         {% for replica in replicas %}
 		<tr>
@@ -21,7 +22,8 @@
 			<td>{{ replica.status|safe }}</td>
 			<td>{{ replica.minor_status|safe }}</td>
 			<td>{{ replica.path|safe }} </td>
-			<td>{{ replica.is_origin|safe }} </td>			
+			<td>{{ replica.is_origin|safe }} </td>		
+			<td>{{ replica.checksum|safe }} </td>
 		</tr>
 		{% endfor %}
 		</table>
