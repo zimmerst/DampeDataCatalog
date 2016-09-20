@@ -86,7 +86,7 @@ class BulkRegister(MethodView):
             logger.exception("BulkRegister:POST: %s",err)
             return dumps({"result": "nok", "jobID": "None", "error": str(err)})
 
-class UpdateQuery(MethodView):
+class Update(MethodView):
     def get(self):
         return 
         
@@ -171,7 +171,9 @@ files.add_url_rule('/', view_func=DataSetView.as_view('dataset'),methods=["GET"]
 files.add_url_rule('/<slug>/', view_func=ListView.as_view('list'))
 files.add_url_rule('/<slug>/detail', view_func=DetailView.as_view('detail'))
 files.add_url_rule('/info', view_func=InfoView.as_view('info'),methods=["GET"])
+# registration endpoints
 files.add_url_rule('/bregister', view_func=BulkRegister.as_view("bregister"),methods=["GET","POST"])
 files.add_url_rule('/register', view_func=Register.as_view("register"),methods=["GET","POST"])
-files.add_url_rule('/update', view_func=Register.as_view("update"),methods=["GET","POST"])
+# new endpoints.
+files.add_url_rule('/update', view_func=Update.as_view("update"),methods=["GET","POST"])
 
