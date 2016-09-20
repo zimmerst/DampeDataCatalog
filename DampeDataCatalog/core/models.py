@@ -141,6 +141,11 @@ def createNewDBEntry(**kwargs):
         dsname = walker[0]
     logger.debug("dsname: %s, kind: %s",dsname,dtype)
     ds = df = None
+    existing_replica = DampeFileReplica.objects.filter(checksum=kwargs.get("chksum"),is_origin=bool(kwargs.get("is_origin",False)),
+                           path=kwargs.get("target","/"),site=kwargs.get("site",""),status="New")
+    if existing_replica.count():
+        logger.info("replica exists already, exiting")
+        return
     dsQuery = DataSet.objects.filter(name=dsname, kind=dtype)
     if not dsQuery.count():
         ds = DataSet(name=dsname, kind=dtype)
@@ -173,6 +178,7 @@ def createNewDBEntry(**kwargs):
                 str_value = loads(value)
                 value = datetime.datetime.strptime(str_value,'%Y-%m-%d %H:%M:%S.%f')
             dfQuery.update(key=value) # perform atomic updates
+
                 
     rep = DampeFileReplica(checksum=kwargs.get("chksum"),is_origin=bool(kwargs.get("is_origin",False)),
                            path=kwargs.get("target","/"),site=kwargs.get("site",""),status="New")
