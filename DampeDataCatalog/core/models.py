@@ -92,6 +92,10 @@ class DampeFileReplica(db.Document):
         if minor_stat:
             q.update(minor_status=minor_stat)
         q.update(status=stat)
+        
+    def getUrl(self):
+        """ returns the proper url of file """
+        return pJoin(self.path,self.dampeFile.dataset.name,self.dampeFile.fileName)
 
     meta = {
         'allow_inheritance': True,
