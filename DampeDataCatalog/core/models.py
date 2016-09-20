@@ -47,6 +47,7 @@ class DampeFile(db.Document):
         if not isinstance(rep,DampeFileReplica): raise Exception("must be a DampeFileReplica")
         query = DampeFileReplica.objects.filter(dampeFile=self,site=rep.site)
         if query.count(): raise Exception("replica is already associated with this site & file")
+        rep.dampeFile = self
         rep.save()
         self.replicas.append(rep)
         self.save()
@@ -191,7 +192,7 @@ def createNewDBEntry(**kwargs):
                 
     rep = DampeFileReplica(checksum=kwargs.get("chksum"),is_origin=bool(kwargs.get("is_origin",False)),
                            path=kwargs.get("target","/"),site=kwargs.get("site",""),status="New")
-    rep.save()
+    #rep.save()
     df.addReplica(rep)
     ds.files.append(df)
     ds.save()
