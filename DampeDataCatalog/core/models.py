@@ -32,6 +32,7 @@ class DampeFile(db.Document):
     created_at      = db.DateTimeField(default=datetime.datetime.now, required=True)
     fileType        = db.StringField(verbose_name="file extension, root, fits etc.", max_length=6, required=True, default="root")
     slug            = db.StringField(verbose_name="slug", required=True, default=random_string_generator)
+    mode            = db.StringField(verbose_name="mode (only relevant for 2A)", required=False, default="OBS")
     dataset         = db.ReferenceField("DataSet",reverse_delete_rule=CASCADE)
     fileName        = db.StringField(verbose_name="full file name", max_length=1024, required=True)
     replicas        = db.ListField(db.ReferenceField("DampeFileReplica"))
@@ -111,6 +112,7 @@ def createNewDBEntry(**kwargs):
         target = str
         dtype = str
         release = str
+        mode = str
         dtype can be: 2A, MC, might add additional types later.
         MC: dataset name is the base folder (after prefix)
         2A: dataset name is the base folder + 1 layer (after 1 prefix)            
@@ -148,7 +150,12 @@ def createNewDBEntry(**kwargs):
         dfQuery = DampeFile.objects.get(fileType=splitext(fPath)[-1],fileName=basename(fPath),dataset=dsQuery)
     except DampeFile.DoesNotExist:
         dfQuery = DampeFile(fileType=splitext(fPath)[-1],fileName=basename(fPath),dataset=dsQuery)
-    dfQuery.size = long(kwargs.get("size",0))
+    mode = kwargs.get("mode",None)
+    if mode is not None:
+        dfQuery.mode = mode
+    fsize = kwargs.get("size",None)
+    if fsize is not None:
+        dfQuery.size = long(fsize)
     dfQuery.save()
     
     for key in ['tStart','tStop','tStartDT','tStopDT','nEvents']:
