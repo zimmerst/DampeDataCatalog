@@ -17,7 +17,7 @@ class DataSet(db.Document):
     def addFile(self,df):
         if not isinstance(df,DampeFile): raise Exception("must be a DampeFile instance")
         query = DampeFile.objects.filter(dataset=self,fileName=df.fileName)
-        if query.count(): raise Exception("replica is already associated with this site & file")
+        if query.count(): raise Exception("file is already associated with this dataset")
         df.save()
         self.files.append(df)
         self.save()
@@ -160,7 +160,7 @@ def createNewDBEntry(**kwargs):
     fsize = kwargs.get("size",None)
     if fsize is not None:
         df.size = long(fsize)
-    df.save()
+    #df.save()
     dfQuery = DampeFile.objects.filter(fileType=splitext(fPath)[-1],fileName=basename(fPath),dataset=ds)
     for key in ['tStart','tStop','tStartDT','tStopDT','nEvents']:
         value = kwargs.get(key,None)
@@ -179,5 +179,3 @@ def createNewDBEntry(**kwargs):
     rep.save()
     df.addReplica(rep)
     ds.addFile(df)
-    # not needed anymore.
-    #dsQuery.addFile(dfQuery)
