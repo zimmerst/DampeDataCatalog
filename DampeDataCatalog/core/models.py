@@ -139,7 +139,7 @@ def createNewDBEntry(**kwargs):
                 dsname = pJoin(dsname,walk)
     else:
         dsname = walker[0]
-    logger.debug("dsname: %s",dsname)
+    logger.debug("dsname: %s, kind: %s",dsname,dtype)
     dsQuery = dfQuery = None
     try:
         dsQuery = DataSet.objects.get(name=dsname, kind=dtype)
