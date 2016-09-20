@@ -95,7 +95,12 @@ class DampeFileReplica(db.Document):
         
     def getUrl(self):
         """ returns the proper url of file """
-        return pJoin(self.path,self.dampeFile.dataset.name,self.dampeFile.fileName)
+        path = self.path
+        df = self.dampeFile
+        filename = df.fileName
+        ds = df.dataset
+        dsname = ds.name
+        return pJoin(path, dsname, filename)
 
     meta = {
         'allow_inheritance': True,
