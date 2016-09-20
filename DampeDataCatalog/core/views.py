@@ -30,8 +30,8 @@ class Register(MethodView):
         """
         logger.debug("Register:POST: request form %s", str(request.form))
         try:
-            createNewDBEntry(**dict(request.form))
-            return dumps({"result":"ok","nEntries":1})
+            nE = createNewDBEntry(**dict(request.form))
+            return dumps({"result":"ok","nEntries":nE})
             ## done.
         except Exception as err:
             logger.error("request dict: %s", str(request.form))
@@ -73,11 +73,10 @@ class BulkRegister(MethodView):
                     logger.error("error processing line %i: %s",i,line)
                     continue
                 ## else create entry.
-                createNewDBEntry(site=site,is_origin=bool(request.form.get("is_origin",False)),chksum=chksum,
+                newEntries+=createNewDBEntry(site=site,is_origin=bool(request.form.get("is_origin",False)),chksum=chksum,
                                  release=request.form.get("release",""),size=size,
                                  fullPath=fullPath,prefix=str(request.form.get("prefix","PMU_cluster/")),
                                  target=str(request.form.get("target","/")),dtype=str(request.form.get("dtype","2A")))
-                newEntries+=1
             logger.info("added %i new entries",newEntries)
             bulk.close()
             return dumps({"result":"ok","nEntries":newEntries})

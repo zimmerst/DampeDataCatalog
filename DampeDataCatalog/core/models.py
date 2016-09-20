@@ -145,7 +145,7 @@ def createNewDBEntry(**kwargs):
                            path=kwargs.get("target","/"),site=kwargs.get("site",""),status="New")
     if existing_replica.count():
         logger.info("replica exists already, exiting")
-        return
+        return 0
     dsQuery = DataSet.objects.filter(name=dsname, kind=dtype)
     if not dsQuery.count():
         ds = DataSet(name=dsname, kind=dtype)
@@ -186,3 +186,4 @@ def createNewDBEntry(**kwargs):
     df.addReplica(rep)
     ds.files.append(df)
     ds.save()
+    return 1
