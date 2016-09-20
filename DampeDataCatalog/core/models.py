@@ -160,7 +160,7 @@ def createNewDBEntry(**kwargs):
     fsize = kwargs.get("size",None)
     if fsize is not None:
         df.size = long(fsize)
-    #df.save()
+    df.save()
     dfQuery = DampeFile.objects.filter(fileType=splitext(fPath)[-1],fileName=basename(fPath),dataset=ds)
     for key in ['tStart','tStop','tStartDT','tStopDT','nEvents']:
         value = kwargs.get(key,None)
@@ -172,7 +172,7 @@ def createNewDBEntry(**kwargs):
                 #'"2016-09-19 14:52:49.862971"'
                 str_value = loads(value)
                 value = datetime.datetime.strptime(str_value,'%Y-%m-%d %H:%M:%S.%f')
-            dfQuery.update(key=value)
+            dfQuery.update(key=value) # perform atomic updates
                 
     rep = DampeFileReplica(checksum=kwargs.get("chksum"),is_origin=bool(kwargs.get("is_origin",False)),
                            path=kwargs.get("target","/"),site=kwargs.get("site",""),status="New")
