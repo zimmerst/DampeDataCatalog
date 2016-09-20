@@ -5,7 +5,7 @@ from flask import Blueprint, request, render_template
 from datetime import datetime
 from flask.views import MethodView
 from DampeDataCatalog import version, start_time, hostName
-from DampeDataCatalog.core.models import DampeFile, DataSet, createNewDBEntry
+from DampeDataCatalog.core.models import DampeFile, DampeFileReplica, DataSet, createNewDBEntry
 files = Blueprint('files', __name__, template_folder='templates')
 logger = logging.getLogger("core")
 
@@ -86,6 +86,54 @@ class BulkRegister(MethodView):
             logger.exception("BulkRegister:POST: %s",err)
             return dumps({"result": "nok", "jobID": "None", "error": str(err)})
 
+class UpdateQuery(MethodView):
+    def get(self):
+        return 
+        
+    def post(self):
+        """ form args 
+            site = str
+            fileName = str
+            status = str
+            minor_status = str
+            checksum = str
+            tStart = long
+            tStop  = long
+            tStartDT = datetime as string
+            tStopDT = datetime as string
+            nEvents = long
+        """
+        logger.debug("UpdateQuery:POST: request form %s", str(request.form))
+        # use:         
+        file_keys = ['fileName','tStart','tStop','tStartDT','tStopDT','nEvents']
+        replica_keys = ['site','status','minor_status','checksum']
+        file_dict = replica_dict = {}
+        try:
+            for key in file_keys + replica_keys:
+                val = request.form.get(key,None)
+                if val is None or val == "None":
+                    if key == "fileName": raise Exception("fileName is not provided")
+                    else:
+                        continue
+                if key in file_keys:
+                    if key in ['nEvents','tStart','tStop']: val = long(val)
+                    elif key in ['tStartDT','tStopDT']: val = datetime.strptime(val,'%Y-%m-%d %H:%M:%S.%f')
+                    else:
+                        file_dict[key]=val
+                elif key in replica_keys:
+                    replica_dict[key]=val
+            ## done extracting request arguments.
+            dfQuery = DampeFile.objects.filter(fileName=file_dict['fileName']).update(**file_dict)
+            if not dfQuery: raise Exception("query failed, updated %i files",dfQuery)
+            df = dfQuery.first()
+            drQuery = DampeFileReplica.objects.filter(dampeFile=df, site=replica_dict['site']).update(**replica_dict)
+            if not drQuery: raise Exception("query failed, updated %i replica",drQuery)
+            
+        except Exception as err:
+            logger.error("request dict: %s", str(request.form))
+            logger.exception("UpdateQuery:POST: %s",err)
+            return dumps({"result": "nok", "error": str(err)})
+
 # the views below are all for rendering templates
 class InfoView(MethodView):
     def get(self):
@@ -125,4 +173,5 @@ files.add_url_rule('/<slug>/detail', view_func=DetailView.as_view('detail'))
 files.add_url_rule('/info', view_func=InfoView.as_view('info'),methods=["GET"])
 files.add_url_rule('/bregister', view_func=BulkRegister.as_view("bregister"),methods=["GET","POST"])
 files.add_url_rule('/register', view_func=Register.as_view("register"),methods=["GET","POST"])
+files.add_url_rule('/update', view_func=Register.as_view("update"),methods=["GET","POST"])
 
