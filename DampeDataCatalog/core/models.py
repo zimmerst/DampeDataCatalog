@@ -117,13 +117,13 @@ def createNewDBEntry(**kwargs):
         MC: dataset name is the base folder (after prefix)
         2A: dataset name is the base folder + 1 layer (after 1 prefix)            
     """
+    # apparently, we hand over list objects with the keywards...
     kwargs = {k:v[0] if isinstance(v,list) else v for k,v in kwargs.iteritems()}
     # must separate a bit more from path
     fPath = kwargs.get("fullPath",None)
     if fPath is None:
         raise Exception("full path not provided")
     # remove prefix
-    fPath = fPath[0]
     prf = kwargs.get("prefix","/")
     if prf in fPath:
         fPath = fPath.replace(prf,"")
