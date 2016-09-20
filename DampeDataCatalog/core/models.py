@@ -140,7 +140,7 @@ def createNewDBEntry(**kwargs):
     else:
         dsname = walker[0]
     logger.debug("dsname: %s, kind: %s",dsname,dtype)
-    dsQuery = ds = dfQuery = df = None
+    ds = df = None
     dsQuery = DataSet.objects.filter(name=dsname, kind=dtype)
     if not dsQuery.count():
         ds = DataSet(name=pJoin(walker[0],walker[1]) if dtype == "2A" else walker[0], kind=dtype)
