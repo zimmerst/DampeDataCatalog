@@ -143,7 +143,7 @@ def createNewDBEntry(**kwargs):
     ds = df = None
     dsQuery = DataSet.objects.filter(name=dsname, kind=dtype)
     if not dsQuery.count():
-        ds = DataSet(name=pJoin(walker[0],walker[1]) if dtype == "2A" else walker[0], kind=dtype)
+        ds = DataSet(name=dsname, kind=dtype)
         logger.debug("created new DataSet object, saving.")
         ds.save()
     else:
