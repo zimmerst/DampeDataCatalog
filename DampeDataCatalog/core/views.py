@@ -86,11 +86,11 @@ class BulkRegister(MethodView):
             logger.exception("BulkRegister:POST: %s",err)
             return dumps({"result": "nok", "jobID": "None", "error": str(err)})
 
-class Update(MethodView):
-    def get(self):
-        return 
-        
-    def post(self):
+class UpdateQuery(MethodView):
+
+    def assemble_dicts(self,request,rtype):
+        # convenience function, will return two dictionaries
+        logger.debug("UpdateQuery:%s: request form %s", str(request.form),rtype)
         """ form args 
             site = str
             fileName = str
@@ -103,32 +103,48 @@ class Update(MethodView):
             tStopDT = datetime as string
             nEvents = long
         """
-        logger.debug("UpdateQuery:POST: request form %s", str(request.form))
-        # use:         
         file_keys = ['fileName','tStart','tStop','tStartDT','tStopDT','nEvents']
         replica_keys = ['site','status','minor_status','checksum']
         file_dict = replica_dict = {}
-        try:
-            for key in file_keys + replica_keys:
-                val = request.form.get(key,None)
-                if val is None or val == "None":
-                    if key == "fileName": raise Exception("fileName is not provided")
-                    else:
-                        continue
-                if key in file_keys:
-                    if key in ['nEvents','tStart','tStop']: val = long(val)
-                    elif key in ['tStartDT','tStopDT']: val = datetime.strptime(val,'%Y-%m-%d %H:%M:%S.%f')
-                    else:
-                        file_dict[key]=val
-                elif key in replica_keys:
-                    replica_dict[key]=val
-            ## done extracting request arguments.
+        for key in file_keys + replica_keys:
+            val = request.form.get(key,None)
+            if val is None or val == "None":
+                if key == "fileName" and rtype == "POST": 
+                    raise Exception("fileName is not provided")
+                else:
+                    continue
+            if key in file_keys:
+                if key in ['nEvents','tStart','tStop']: val = long(val)
+                elif key in ['tStartDT','tStopDT']: val = datetime.strptime(val,'%Y-%m-%d %H:%M:%S.%f')
+                else:
+                    file_dict[key]=val
+            elif key in replica_keys:
+                replica_dict[key]=val
+        return file_dict, replica_dict
+    
+    def get(self):
+        #file_dict, replica_dict = self.make_dicts(request, "GET")
+        return 
+        #try:            
+        #    dfQuery = DampeFile.objects.filter(fileName=file_dict['fileName']).update(**file_dict)
+        #    if not dfQuery: raise Exception("query failed, updated %i files",dfQuery)
+        #    df = dfQuery.first()
+        #    drQuery = DampeFileReplica.objects.filter(dampeFile=df, site=replica_dict['site']).update(**replica_dict)
+        #    if not drQuery: raise Exception("query failed, updated %i replica",drQuery)
+        #    
+        #except Exception as err:
+        #    logger.error("request dict: %s", str(request.form))
+        #    logger.exception("UpdateQuery:POST: %s",err)
+        #    return dumps({"result": "nok", "error": str(err)})
+        
+    def post(self):
+        try:            
+            file_dict, replica_dict = self.assemble_dicts(request, "POST")
             dfQuery = DampeFile.objects.filter(fileName=file_dict['fileName']).update(**file_dict)
             if not dfQuery: raise Exception("query failed, updated %i files",dfQuery)
             df = dfQuery.first()
             drQuery = DampeFileReplica.objects.filter(dampeFile=df, site=replica_dict['site']).update(**replica_dict)
-            if not drQuery: raise Exception("query failed, updated %i replica",drQuery)
-            
+            if not drQuery: raise Exception("query failed, updated %i replica",drQuery)            
         except Exception as err:
             logger.error("request dict: %s", str(request.form))
             logger.exception("UpdateQuery:POST: %s",err)
@@ -175,5 +191,5 @@ files.add_url_rule('/info', view_func=InfoView.as_view('info'),methods=["GET"])
 files.add_url_rule('/bregister', view_func=BulkRegister.as_view("bregister"),methods=["GET","POST"])
 files.add_url_rule('/register', view_func=Register.as_view("register"),methods=["GET","POST"])
 # new endpoints.
-files.add_url_rule('/update', view_func=Update.as_view("update"),methods=["GET","POST"])
+files.add_url_rule('/query', view_func=UpdateQuery.as_view("update"),methods=["GET","POST"])
 
