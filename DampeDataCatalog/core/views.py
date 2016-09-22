@@ -123,7 +123,14 @@ class UpdateQuery(MethodView):
         return file_dict, replica_dict
     
     def get(self):
-        """ form args as POST, plus kind & dataset """
+        """ 
+            this is the method to query the DC
+            the request form accepts the same keys as POST, see UpdateQuery.assemble_dicts for details
+            in additon following args are supported:
+            kind = 2A, MC (matches dataset 'kind')
+            dataset = name of dataset (may contain wildcards)
+            (N.B. if dataset contains a *, all matching datasets will be queried)
+        """
         file_dict, replica_dict = self.make_dicts(request, "GET")
         for key in ['checksum','nEvents']: 
             for d in [file_dict,replica_dict]:
@@ -140,7 +147,10 @@ class UpdateQuery(MethodView):
             if len(ds_dict.keys()):                
                 for key,value in ds_dict.iteritems():
                     if key == 'dataset':
-                        datasets_in_query = datasets_in_query.filter(name__contains=value)
+                        if "*" in value:
+                            datasets_in_query = datasets_in_query.filter(name__contains=value)
+                        else:
+                            datasets_in_query = datasets_in_query.filter(name=value)
                     else:
                         datasets_in_query = datasets_in_query.filter(kind=value)
                 if not datasets_in_query.count():
