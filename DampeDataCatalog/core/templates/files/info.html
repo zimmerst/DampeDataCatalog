@@ -12,7 +12,8 @@
 <div>
 <p><strong>Number of datasets in catalog: </strong> {{nDS}} </p>
 <p><strong>total number of registered files: </strong> {{nF}} </p>
-<p><strong>total file size: </strong> {{ total_filesize }} </p>
+<p><strong>total number of registered replicas: </strong> {{nR}} </p>
+<p><strong>total file size: </strong> {{ total_filesize | safe}} </p>
 </div>
-
+	
 {% endblock %}

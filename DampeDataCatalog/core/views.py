@@ -6,6 +6,7 @@ from datetime import datetime
 from flask.views import MethodView
 from DampeDataCatalog import version, start_time, hostName
 from DampeDataCatalog.core.models import DampeFile, DampeFileReplica, DataSet, createNewDBEntry
+from DampeDataCatalog.utils.tools import convertBytesToHuman
 files = Blueprint('files', __name__, template_folder='templates')
 logger = logging.getLogger("core")
 
@@ -203,13 +204,14 @@ class InfoView(MethodView):
         m = divmod(h[1],60)
         s = m[1]        
         uptime = '%03d:%02d:%02d:%02d'%(d[0],h[0],m[0],s)
+        df = DampeFile.objects.all()
         return render_template("files/info.html", 
                                server_version=version, uptime=uptime, 
                                start_time=start_time, host=hostName, 
                                nDS=DataSet.objects.all().count(), 
-                               nF =DampeFile.objects.all().count(),
+                               nF =df.count(),
                                nR =DampeFileReplica.objects.all().count(),
-                               total_filesize = DampeFile.objects.all().aggregate_sum("fileSize"))
+                               total_filesize = convertBytesToHuman(df.aggregate_sum("fileSize")))
 
 class DataSetView(MethodView):
     def get(self):
