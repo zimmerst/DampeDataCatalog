@@ -123,19 +123,52 @@ class UpdateQuery(MethodView):
         return file_dict, replica_dict
     
     def get(self):
-        #file_dict, replica_dict = self.make_dicts(request, "GET")
-        return 
-        #try:            
-        #    dfQuery = DampeFile.objects.filter(fileName=file_dict['fileName']).update(**file_dict)
-        #    if not dfQuery: raise Exception("query failed, updated %i files",dfQuery)
-        #    df = dfQuery.first()
-        #    drQuery = DampeFileReplica.objects.filter(dampeFile=df, site=replica_dict['site']).update(**replica_dict)
-        #    if not drQuery: raise Exception("query failed, updated %i replica",drQuery)
-        #    
-        #except Exception as err:
-        #    logger.error("request dict: %s", str(request.form))
-        #    logger.exception("UpdateQuery:POST: %s",err)
-        #    return dumps({"result": "nok", "error": str(err)})
+        """ form args as POST, plus kind & dataset """
+        file_dict, replica_dict = self.make_dicts(request, "GET")
+        for key in ['checksum','nEvents']: 
+            for d in [file_dict,replica_dict]:
+                if key in d:
+                    d.pop(key)
+        replica_dict.setdefault('status','good')
+        try:
+            datasets_in_query = DataSet.objects.all()
+            ds_dict = {}
+            for key in ["dataset","kind"]:
+                val = self.request.form.get(key,None)
+                if val is not None:
+                    ds_dict[key]=val
+            if len(ds_dict.keys()):                
+                for key,value in ds_dict.iteritems():
+                    if key == 'dataset':
+                        datasets_in_query = datasets_in_query.filter(name__contains=value)
+                    else:
+                        datasets_in_query = datasets_in_query.filter(kind=value)
+                if not datasets_in_query.count():
+                    raise Exception("found no dataset with query provided")
+            datasets_in_query = datasets_in_query.all()
+            # now let's find files
+            dfQuery = DampeFile.objects.all()
+            if datasets_in_query.count():
+                dfQuery = dfQuery.filter(dataset__in=datasets_in_query)
+            if 'tStart' in file_dict:
+                dfQuery = dfQuery.filter(tStart__gte=file_dict['tStart'])
+            if 'tStop' in file_dict:
+                dfQuery = dfQuery.filter(tStop__lte=file_dict['tStop'])
+            if 'tStartDT' in file_dict:
+                dfQuery = dfQuery.filter(tStartDT__gte=file_dict['tStartDT'])
+            if 'tStopDT' in file_dict:
+                dfQuery = dfQuery.filter(tStopDT__lte=file_dict['tStopDT'])
+            if not dfQuery.count():
+                raise Exception("found no data files matching query")
+            replicas = DampeFileReplica.objects.filter(dampeFile__in=dfQuery)
+            if 'site' in replica_dict:
+                replicas = replicas.filter(site=replica_dict['site'])
+            if not replicas.count():
+                raise Exception("found no replicas matching the dataset requested on site %s",replica_dict['site'])
+            urls = [rep.getUrl() for rep in replicas]
+            return dumps({"result":"ok","urls":urls})
+        except Exception as err:
+            return dumps({"result":"nok","error":str(err)})
         
     def post(self):
         try:            
