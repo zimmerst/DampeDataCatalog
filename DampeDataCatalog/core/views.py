@@ -205,7 +205,11 @@ class InfoView(MethodView):
         uptime = '%03d:%02d:%02d:%02d'%(d[0],h[0],m[0],s)
         return render_template("files/info.html", 
                                server_version=version, uptime=uptime, 
-                               start_time=start_time, host=hostName)
+                               start_time=start_time, host=hostName, 
+                               nDS=DataSet.objects.all().count(), 
+                               nF =DampeFile.objects.all().count(),
+                               nR =DampeFileReplica.objects.all().count(),
+                               total_filesize = DampeFile.objects.all().aggregate_sum("fileSize"))
 
 class DataSetView(MethodView):
     def get(self):
