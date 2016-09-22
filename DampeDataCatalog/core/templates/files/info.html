@@ -1,19 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
-<h3>Server Information </h3>
-<div>
-<p><strong>Server Version: </strong> {{server_version}} </p>
-<p><strong>Server Hostname: </strong> {{host}} </p>
-<p><strong>Server Started At   : </strong> {{start_time}} </p>
-<p><strong>Server Uptime   : </strong> {{uptime}} </p>
-</div>
-
-<h3>Database Information </h3>
+<h3>File Catalog Information </h3>
 <div>
 <p><strong>Number of datasets in catalog: </strong> {{nDS}} </p>
 <p><strong>total number of registered files: </strong> {{nF}} </p>
 <p><strong>total number of registered replicas: </strong> {{nR}} </p>
 <p><strong>total file size: </strong> {{ total_filesize | safe}} </p>
 </div>
-	
+
+<h3>Server Information </h3>
+<div>
+<p><strong>Server Version: </strong> {{server_version}} </p>
+<p><strong>Server Hostname: </strong> {{host}} </p>
+<p><strong>Server Started At   : </strong> {{start_time}} </p>
+<p><strong>Server Uptime   : </strong> {{uptime}} </p>
+</div>	
 {% endblock %}
