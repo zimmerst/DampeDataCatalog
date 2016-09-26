@@ -11,7 +11,7 @@ class DataSet(db.Document):
     created_at      = db.DateTimeField(default=datetime.datetime.now, required=True)
     slug            = db.StringField(verbose_name="slug", required=True, default=random_string_generator)
     name            = db.StringField(verbose_name="dataset name", max_length=128, required=True)
-    kind            = db.StringField(max_length=24, required=False)
+    kind            = db.StringField(max_length=8, required=True,default='2A')
     files           = db.ListField(db.ReferenceField("DampeFile"))
 
     def addFile(self,df):

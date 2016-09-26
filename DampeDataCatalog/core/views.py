@@ -94,6 +94,7 @@ class UpdateQuery(MethodView):
         logger.debug("UpdateQuery:%s: request form %s", str(request.form),rtype)
         """ form args 
             site = str
+            fileType = str
             fileName = str
             status = str
             minor_status = str
@@ -104,7 +105,7 @@ class UpdateQuery(MethodView):
             tStopDT = datetime as string
             nEvents = long
         """
-        file_keys = ['fileName','tStart','tStop','tStartDT','tStopDT','nEvents']
+        file_keys = ['fileName','fileType','tStart','tStop','tStartDT','tStopDT','nEvents']
         replica_keys = ['site','status','minor_status','checksum']
         file_dict = replica_dict = {}
         for key in file_keys + replica_keys:
@@ -188,7 +189,8 @@ class UpdateQuery(MethodView):
             if not dfQuery: raise Exception("query failed, updated %i files",dfQuery)
             df = dfQuery.first()
             drQuery = DampeFileReplica.objects.filter(dampeFile=df, site=replica_dict['site']).update(**replica_dict)
-            if not drQuery: raise Exception("query failed, updated %i replica",drQuery)            
+            if not drQuery: raise Exception("query failed, updated %i replica",drQuery)
+            return dumps({"result":"ok","nReplica":drQuery.count()})        
         except Exception as err:
             logger.error("request dict: %s", str(request.form))
             logger.exception("UpdateQuery:POST: %s",err)

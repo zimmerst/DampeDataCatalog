@@ -33,8 +33,8 @@ def main(args=None):
     else:
         my_dict.pop("file")
     keys_to_remove = []
-    for key in my_dict:
-        if my_dict[key] is None:
+    for key,value in my_dict.iteritems():
+        if value is None:
             keys_to_remove.append(key)
     for key in keys_to_remove: 
         my_dict.pop(key)
