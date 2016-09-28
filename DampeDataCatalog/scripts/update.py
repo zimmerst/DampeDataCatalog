@@ -6,12 +6,13 @@ Created on Sep 19, 2016
 @note: url: http://dampevm6.unige.ch:4000 
 @todo: integrate config setup
 """
+from DampeDataCatalog import version as DV
 from requests import post as rPost
 from argparse import ArgumentParser
 URL = "http://dampevm6.unige.ch:4000"
 
 def main(args=None):
-    parser = ArgumentParser(usage="Usage: %(prog)s [options]",description="update entries in DFC")
+    parser = ArgumentParser(usage="Usage: %(prog)s [options]",description="update entries in DFC",epilog="This is DampeDataCatalog version %s"%DV)
     for key in ['site','fileName','nEvents','kind']:
         parser.add_argument("-%s"%key[0],"--%s"%key, dest=key, type=long if key == 'nEvents' else str, default=None)
     parser.add_argument("--fileType",dest='fileType', type=str, default="root", help="file extension to query (root/fits)")

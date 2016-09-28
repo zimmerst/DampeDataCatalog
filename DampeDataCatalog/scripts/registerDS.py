@@ -6,13 +6,14 @@ Created on Sep 19, 2016
 @note: url: http://dampevm6.unige.ch:4000 
 @todo: integrate config setup
 """
+from DampeDataCatalog import version as DV
 from requests import post
 from os.path import isfile
 from argparse import ArgumentParser
 URL = "http://dampevm6.unige.ch:4000"
 
 def main(args=None):
-    parser = ArgumentParser(usage="Usage: %(prog)s [options]",description="register new entry in DFC")
+    parser = ArgumentParser(usage="Usage: %(prog)s [options]",description="register new entry in DFC",epilog="This is DampeDataCatalog version %s"%DV)
     for key in ['chksum','prefix','target','release','size','dtype']:
         parser.add_argument("-%s"%key[0],"--%s"%key, dest=key, type=long if key == 'size' else str, default=None)
     parser.add_argument("-f","--file",dest="file",type=str,default=False,help="read input from text-file and attempt a bulk-register")
