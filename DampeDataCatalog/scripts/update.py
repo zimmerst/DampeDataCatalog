@@ -11,9 +11,13 @@ from argparse import ArgumentParser
 URL = "http://dampevm6.unige.ch:4000"
 
 def main(args=None):
-    parser = ArgumentParser(usage="Usage: %(prog)s [options]",description="query entries in DFC")
-    for key in ['site','fileName','nEvents','kind']:
-        parser.add_argument("-%s"%key[0],"--%s"%key, dest=key, type=long if key == 'nEvents' else str, default=None)
+    parser = ArgumentParser(usage="Usage: %(prog)s [options]",description="update entries in DFC")
+    #for key in ['site','fileName','nEvents','kind']:
+    #    parser.add_argument("-%s"%key[0],"--%s"%key, dest=key, type=long if key == 'nEvents' else str, default=None)
+    parser.add_argument("-k","--kind",dest='kind', type=str, default=None, help="MC or 2A or similar")
+    parser.add_argument("-f","--fileName",dest='fileName', type=str, default=None, help="query a specific fileName (this may take some time to complete)")
+    parser.add_argument("-s","--site",dest='site', type=str, default=None, help="site you want to get replicas for")
+    parser.add_argumetn("-n","--nEvents",dest='nEvents',type=int, default=None, help="Number of events in this file")
     parser.add_argument("--fileType",dest='fileType', type=str, default="root", help="file extension to query (root/fits)")
     parser.add_argument("--status",dest='status', type=str, default="good", help="major status (of replica)")
     parser.add_argument("--minor_status",dest='minor_status', type=str, default=None, help="minor status of dataset, leave blank if not needed")
