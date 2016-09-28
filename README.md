@@ -20,6 +20,6 @@ pip install virtualenv
 
 3.	install tarball:
 	``` bash
-	pip install DampeDataCatalog.devel.tar.gz
+	pip install --no-check DampeDataCatalog.devel.tar.gz
 	```
 

@@ -13,8 +13,9 @@ URL = "http://dampevm6.unige.ch:4000"
 
 def main(args=None):
     parser = ArgumentParser(usage="Usage: %(prog)s [options]",description="register new entry in DFC")
-    for key in ['file','chksum','prefix','target','release','size','dtype']:
+    for key in ['chksum','prefix','target','release','size','dtype']:
         parser.add_argument("-%s"%key[0],"--%s"%key, dest=key, type=long if key == 'size' else str, default=None)
+    parser.add_argument("-f","--file",dest="file",type=str,default=False,help="read input from text-file and attempt a bulk-register")
     parser.add_argument("-o","--is_original",dest="is_origin",action="store_true",default=False,help="use if this is the source")
     parser.add_argument("-F","--fullPath",dest="fullPath",type=str, default=None, help="full path to file")
     parser.add_argument("-S","--site",type=str, default=None, help="*deprecated* site where replica is registered")
