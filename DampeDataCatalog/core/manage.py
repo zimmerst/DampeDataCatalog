@@ -3,7 +3,7 @@ from os.path import abspath, join as oPjoin, dirname
 from sys import path as sys_path
 
 sys_path.append(abspath(oPjoin(dirname(__file__), '..')))
-from flask.ext.script import Manager, Server, Shell
+from flask_script import Manager, Server, Shell
 import DampeDataCatalog.core.models as DFCModels
 from DampeDataCatalog.core import app, db
 
